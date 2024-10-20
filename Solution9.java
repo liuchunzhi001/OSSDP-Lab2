@@ -84,15 +84,15 @@ class Solution9 {
     }
     // 测试类
     public static void main(String[] args) {
-        Solution9 solution = new Solution9();
+        Solution9 L2022211898_Solution9_Test.java = new Solution9();
         // 示例 1
         int[][] dislikes1 = {{1, 2}, {1, 3}, {2, 4}};
-        System.out.println(solution.possibleBipartition(4, dislikes1)); // 输出 true
+        System.out.println(L2022211898_Solution9_Test.java.possibleBipartition(4, dislikes1)); // 输出 true
         // 示例 2
         int[][] dislikes2 = {{1, 2}, {1, 3}, {2, 3}};
-        System.out.println(solution.possibleBipartition(3, dislikes2)); // 输出 false
+        System.out.println(L2022211898_Solution9_Test.java.possibleBipartition(3, dislikes2)); // 输出 false
         // 示例 3
         int[][] dislikes3 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {1, 5}};
-        System.out.println(solution.possibleBipartition(5, dislikes3)); // 输出 false
+        System.out.println(L2022211898_Solution9_Test.java.possibleBipartition(5, dislikes3)); // 输出 false
     }
 }
