@@ -37,50 +37,62 @@ import java.util.List;
  *
  */
 class Solution9 {
-
     public boolean possibleBipartition(int n, int[][] dislikes) {
-        int[] fa = new int[n + 1];
-        Arrays.fill(fa, -1);
-        List<Integer>[] g = new List[n + 1];
-        for (int i = 0; i < n; ++i) {
-            g[i] = new ArrayList<Integer>();
+        int[] fa = new int[n + 1]; // 并查集，初始化为节点自身
+        for (int i = 1; i <= n; i++) {
+            fa[i] = i; // 初始化为自身
         }
-        for (int[] p : dislikes)
-            g[p[0]].add(p[1]);
-            g[p[1]].add(p[0]);
-        for (int i = 1; i <= n; ++i) {
-            for (int j = 0; j < g[i].size(); ++j) {
-                unit(g[i].get(0), g[i].get(j), fa);
-                if (isconnect(i, g[i].get(j), fa)) {
+        List<Integer>[] g = new List[n + 1];
+        for (int i = 1; i <= n; i++) {
+            g[i] = new ArrayList<>();
+        }
+        for (int[] p : dislikes) {
+            int a = p[0], b = p[1];
+            g[a].add(b);
+            g[b].add(a);
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int neighbor : g[i]) {
+                if (findFa(i, fa) == findFa(neighbor, fa)) {
+                    // 如果已经在同一个集合中，则无法分组
                     return false;
                 }
+                union(i, neighbor, fa);
             }
         }
         return true;
     }
 
-    public void unit(int x, int y, int[] fa) {
-        x = findFa(x, fa);
-        y = findFa(y, fa);
-        if (x == y) {
-            return ;
+    private void union(int x, int y, int[] fa) {
+        int rootX = findFa(x, fa);
+        int rootY = findFa(y, fa);
+        if (rootX != rootY) {
+            // 合并两个集合，这里简单地选择一个集合的代表作为新集合的代表
+            fa[rootX] = -rootY; // 或者 fa[rootY] = -rootX，只要保证它们不同集合并且可以识别即可
+            // 注意：这里使用负数是为了在后续可以通过 fa[i] < 0 来判断 i 是某个集合的代表
         }
-        if (fa[x] <= fa[y]) {
-            int temp = x;
-            x = y;
-            y = temp;
-        }
-        fa[x] += fa[y];
-        fa[y] = x;
     }
 
-    public boolean isconnect(int x, int y, int[] fa) {
-        x = findFa(x, fa);
-        y = findFa(y, fa);
-        return x == y;
+    private int findFa(int x, int[] fa) {
+        if (fa[x] < 0) {
+            // 如果是负数，则已经是代表
+            return x;
+        }
+        // 路径压缩
+        fa[x] = findFa(fa[x], fa);
+        return fa[x];
     }
-
-    public int findFa(int x, int[] fa) {
-        return fa[x] > 0 ? x : (fa[x] = findFa(fa[x], fa));
+    // 测试类
+    public static void main(String[] args) {
+        Solution9 solution = new Solution9();
+        // 示例 1
+        int[][] dislikes1 = {{1, 2}, {1, 3}, {2, 4}};
+        System.out.println(solution.possibleBipartition(4, dislikes1)); // 输出 true
+        // 示例 2
+        int[][] dislikes2 = {{1, 2}, {1, 3}, {2, 3}};
+        System.out.println(solution.possibleBipartition(3, dislikes2)); // 输出 false
+        // 示例 3
+        int[][] dislikes3 = {{1, 2}, {2, 3}, {3, 4}, {4, 5}, {1, 5}};
+        System.out.println(solution.possibleBipartition(5, dislikes3)); // 输出 false
     }
 }
